@@ -9,7 +9,7 @@ from gymnasium import spaces
 from scipy.stats import truncnorm
 
 from controllers.mpc import MpcController
-from icem.controllers.icem import MpcICem
+from controllers.icem import MpcICem
 from misc.rolloutbuffer import RolloutBuffer
 
 from matplotlib import pyplot as plt
