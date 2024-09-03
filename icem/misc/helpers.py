@@ -2,7 +2,7 @@ import json
 import os
 import re
 import sys
-from collections import Mapping
+from collections.abc import Mapping
 from copy import deepcopy
 from warnings import warn
 import ast
@@ -202,6 +202,25 @@ def update_from_cmd_line():
     params = smart_settings.load(sys.argv[1], pre_unpack_hooks=[check_import_in_fixed_params])
     return params
 
+def overrride_from_cmd_line(params):
+    if len(sys.argv) > 2:
+        for cmd in sys.argv[2:]:
+            key, value = cmd.split('=')
+            try:
+                value = ast.literal_eval(value)
+            except ValueError:
+                pass
+            keys = key.split('.')
+            if keys[0] in params:
+                d = params
+                for k in keys[:-1]:
+                    d = d[k]
+                d[keys[-1]] = value
+            params[key] = value
+        a = 0
+        #params[]
+    return params
+
 
 def save_settings_to_json(setting_dict, model_dir):
     filename = os.path.join(model_dir, JSON_SETTINGS_FILE)
@@ -211,10 +230,11 @@ def save_settings_to_json(setting_dict, model_dir):
 
 def compute_and_log_reward_info(rollouts, logger, prefix="", exec_time=None):
     reward_info = {
-        prefix + "mean_avg_reward": rollouts.mean_avg_reward,
-        prefix + "mean_max_reward": rollouts.mean_max_reward,
-        prefix + "mean_return": rollouts.mean_return,
-        prefix + "std_return": rollouts.std_return,
+        #prefix + "mean_avg_reward": rollouts.mean_avg_reward,
+        #prefix + "mean_max_reward": rollouts.mean_max_reward,
+        #prefix + "mean_return": rollouts.mean_return,
+        #prefix + "std_return": rollouts.std_return,
+        prefix + "episode_rewards": rollouts.episode_rewards,
     }
     if exec_time is not None:
         reward_info.update({prefix+"exec_time": exec_time})
@@ -224,6 +244,8 @@ def compute_and_log_reward_info(rollouts, logger, prefix="", exec_time=None):
     except TypeError:
         pass
     for k, v in reward_info.items():
+        if isinstance(v, list):
+            v = np.mean(v)
         logger.log(v, key=k, to_tensorboard=True)
         logger.info(f'{k}: {v}')
 
@@ -252,14 +274,14 @@ class ParamDict(dict):
         except KeyError as e:
             raise AttributeError(e)
 
-    def __delattr__(self, item):
-        raise TypeError("Setting object not mutable after settings are fixed!")
+    #def __delattr__(self, item):
+    #    raise TypeError("Setting object not mutable after settings are fixed!")
 
-    def __setattr__(self, key, value):
-        raise TypeError("Setting object not mutable after settings are fixed!")
+    #def __setattr__(self, key, value):
+    #    raise TypeError("Setting object not mutable after settings are fixed!")
 
-    def __setitem__(self, key, value):
-        raise TypeError("Setting object not mutable after settings are fixed!")
+    #def __setitem__(self, key, value):
+    #    raise TypeError("Setting object not mutable after settings are fixed!")
 
     def __deepcopy__(self, memo):
         """ In order to support deepcopy"""

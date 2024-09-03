@@ -9,7 +9,7 @@ from controllers import controller_from_string
 from controllers.abstract_controller import ModelBasedController, NeedsPolicyController, TeacherController, \
     ParallelController
 from environments import env_from_string
-from misc.helpers import tqdm_context, resolve_params_hierarchy, compute_and_log_reward_info, \
+from misc.helpers import overrride_from_cmd_line, tqdm_context, resolve_params_hierarchy, compute_and_log_reward_info, \
     update_reward_dict, update_from_cmd_line, save_settings_to_json
 from misc.initialization import CheckpointManager
 from models import forward_model_from_string
@@ -82,6 +82,7 @@ class MainState:
 def main():
     params = update_from_cmd_line()
     params = resolve_params_hierarchy(params)
+    params = overrride_from_cmd_line(params)
     allogger.basic_configure(logdir=params.model_dir, default_outputs=['tensorboard'])
     allogger.utils.report_env(to_stdout=True)
 
@@ -92,7 +93,10 @@ def main():
     min_horizon = []
     average_return_history = deque(maxlen=10)
     min_time_required_to_solve = params.training_iterations
-    env = env_from_string(params.env, **params.env_params)
+    render_mode = None
+    if params.rollout_params.render:
+        render_mode = "human"
+    env = env_from_string(params.env, **params.env_params, render_mode=render_mode)
     logger = allogger.get_logger(scope="main")
     main_state = MainState(0, 0)
     potentially_restart = False
@@ -196,8 +200,9 @@ def main():
             rollouts=rollout_man.sample(controller, render=render, mode="train", name="train",
                                         no_rollouts=number_of_rollouts)
         )
-        reward_info.update(compute_and_log_reward_info(
-            new_rollouts, logger, prefix="train_", exec_time=time.time()-start_time))
+        if number_of_rollouts:
+            reward_info.update(compute_and_log_reward_info(
+                new_rollouts, logger, prefix="train_", exec_time=time.time()-start_time))
 
         # Data processing and gathering
         if params.append_data:
@@ -238,7 +243,9 @@ def main():
     env.close()
     save_checkpoint(checkpoint_manager, final=True)
 
-    print(reward_info_full)
+    #print(reward_info_full)
+    #print(np.mean(reward_info_full['eval_mean_return']), np.mean(reward_info_full['eval_std_return']))
+    print(*reward_info_full['eval_episode_rewards'][0])
 
     allogger.close()
 

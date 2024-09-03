@@ -1,13 +1,15 @@
 import math
-from gym.envs.mujoco import ReacherEnv, MujocoEnv
-from gym.envs.mujoco.half_cheetah_v3 import HalfCheetahEnv as HalfCheetah_v3
-from gym.envs.mujoco.ant_v3 import AntEnv as Ant_v3
-from gym.envs.mujoco.humanoid_v3 import HumanoidEnv as Humanoid_v3
-from gym.envs.mujoco.humanoidstandup import HumanoidStandupEnv as HumanoidStandup_v2
-from gym.envs.mujoco.hopper_v3 import HopperEnv
-from gym.utils import EzPickle
+from gymnasium.envs.mujoco import MujocoEnv
+from gymnasium.envs.mujoco.reacher_v4 import ReacherEnv
+from gymnasium.envs.mujoco.half_cheetah_v4 import HalfCheetahEnv as HalfCheetah_v4
+from gymnasium.envs.mujoco.ant_v4 import AntEnv as Ant_v4
+from gymnasium.envs.mujoco.humanoid_v4 import HumanoidEnv as Humanoid_v4
+from gymnasium.envs.mujoco.humanoidstandup import HumanoidStandupEnv as HumanoidStandup_v2
+from gymnasium.envs.mujoco.hopper_v4 import HopperEnv
+from gymnasium.utils import EzPickle
 from math import atan2
 from mujoco_py.generated import const
+import mujoco
 
 from .abstract_environments import *
 
@@ -30,12 +32,21 @@ class MujocoGroundTruthSupportEnv(GroundTruthSupportEnv, MujocoEnvWithDefaults, 
 
     # noinspection PyPep8Naming
     def set_GT_state(self, state):
-        self.sim.set_state_from_flattened(state.copy())
-        self.sim.forward()
+        #print("STATE:", state)
+        #self.sim.set_state_from_flattened(state.copy())
+        state_ = state.copy()
+        #print("STATE ENV:", state_)
+        qpos = state_[:self.model.nv]
+        qvel = state_[self.model.nv:]
+        self.data.qpos[:] = qpos[:]
+        self.data.qvel[:] = qvel[:]
+        mujoco.mj_fwdPosition(self.model, self.data)
+        #self.sim.forward()
 
     # noinspection PyPep8Naming
     def get_GT_state(self):
-        return self.sim.get_state().flatten()
+        return self.state_vector()
+        #return self.sim.get_state().flatten()
 
     # noinspection PyMethodMayBeStatic
     def prepare_for_recording(self):
@@ -45,9 +56,9 @@ class MujocoGroundTruthSupportEnv(GroundTruthSupportEnv, MujocoEnvWithDefaults, 
             self.window_exists = True
 
 
-class HalfCheetahMaybeWithPosition(MujocoGroundTruthSupportEnv, HalfCheetah_v3):
+class HalfCheetahMaybeWithPosition(MujocoGroundTruthSupportEnv, HalfCheetah_v4):
     def __init__(self, *, name, frame_skip=None, penalise_flipping=False, **kwargs):
-        HalfCheetah_v3.__init__(self, **kwargs)
+        HalfCheetah_v4.__init__(self, **kwargs)
         MujocoGroundTruthSupportEnv.__init__(self, name=name, **kwargs)
         self.store_init_arguments(locals())
         EzPickle.__init__(self, name=name, **self.init_kwargs)
@@ -108,9 +119,11 @@ class HalfCheetahMaybeWithPosition(MujocoGroundTruthSupportEnv, HalfCheetah_v3):
         return transformed_state
 
     def step(self, action):
-        x_position_before = self.sim.data.qpos[0]
+        #x_position_before = self.sim.data.qpos[0]
+        x_position_before = self.data.qpos[0]
         self.do_simulation(action, self.frame_skip)
-        x_position_after = self.sim.data.qpos[0]
+        #x_position_after = self.sim.data.qpos[0]
+        x_position_after = self.data.qpos[0]
         x_velocity = ((x_position_after - x_position_before)
                       / self.dt)
 
@@ -131,9 +144,9 @@ class HalfCheetahMaybeWithPosition(MujocoGroundTruthSupportEnv, HalfCheetah_v3):
         return observation, reward, done, info
 
 
-class Ant(MujocoGroundTruthSupportEnv, Ant_v3):
+class Ant(MujocoGroundTruthSupportEnv, Ant_v4):
     def __init__(self, *, name, **kwargs):
-        Ant_v3.__init__(self, **kwargs)
+        Ant_v4.__init__(self, **kwargs)
         MujocoGroundTruthSupportEnv.__init__(self, name=name, **kwargs)
         self.store_init_arguments(locals())
         EzPickle.__init__(self, name=name,
@@ -239,7 +252,8 @@ class HumanoidStandup(MujocoGroundTruthSupportEnv, HumanoidStandup_v2):
         self.viewer.cam.type = const.CAMERA_FIXED
 
     def _get_obs(self):
-        data = self.sim.data
+        #data = self.sim.data
+        data = self.data
         return np.concatenate(
             [
                 data.qpos.flat,
@@ -277,9 +291,9 @@ class HumanoidStandup(MujocoGroundTruthSupportEnv, HumanoidStandup_v2):
         return scores
 
 
-class Humanoid(MujocoGroundTruthSupportEnv, Humanoid_v3):
+class Humanoid(MujocoGroundTruthSupportEnv, Humanoid_v4):
     def __init__(self, *, name, **kwargs):
-        Humanoid_v3.__init__(self, **kwargs)
+        Humanoid_v4.__init__(self, **kwargs)
         MujocoGroundTruthSupportEnv.__init__(self, name=name, **kwargs)
         self.store_init_arguments(locals())
         EzPickle.__init__(self, name=name, **self.init_kwargs)

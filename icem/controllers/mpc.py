@@ -7,7 +7,7 @@ from warnings import warn
 import allogger
 import colorednoise
 import numpy as np
-from gym import spaces
+from gymnasium import spaces
 from scipy.stats import truncnorm
 
 from controllers.abstract_controller import ModelBasedController, StatefulController, OpenLoopPolicy
@@ -60,9 +60,14 @@ class MpcController(ModelBasedController, StatefulController, ABC):
         :param action_sequences: shape: [p,h,d]
         """
         num_parallel_trajs = action_sequences.shape[0]
+        #print("OBS:", obs)
+        #print(num_parallel_trajs)
+        if len(obs) == 2 and not obs[1]:
+            obs = obs[0]
         start_obs = np.array([obs] * num_parallel_trajs)  # shape:[p,d]
         start_states = [state] * num_parallel_trajs
         current_sim_policy = OpenLoopPolicy(action_sequences)
+        #print("START OBS:", start_obs)
         return self.forward_model.predict_n_steps(start_observations=start_obs, start_states=start_states,
                                                   policy=current_sim_policy, horizon=self.horizon)[0]
 

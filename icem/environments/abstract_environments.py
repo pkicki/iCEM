@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-import gym.spaces as spaces
+import gymnasium.spaces as spaces
 import numpy as np
 
 from misc.base_types import Env
@@ -23,7 +23,7 @@ class EnvWithDefaults(Env, ABC):
         return full_state
 
     def reset_with_mode(self, mode):
-        return self.reset()
+        return self.reset()[0]
 
     def get_fps(self):
         if hasattr(self, "dt"):

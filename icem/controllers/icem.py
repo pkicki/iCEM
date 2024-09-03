@@ -5,7 +5,7 @@ from warnings import warn
 import allogger
 import colorednoise
 import numpy as np
-from gym import spaces
+from gymnasium import spaces
 from scipy.stats import truncnorm
 
 from controllers.mpc import MpcController

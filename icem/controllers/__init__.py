@@ -10,6 +10,7 @@ def controller_from_string(controller_str):
 class ControllerFactory:
     # noinspection SpellCheckingInspection
     valid_base_controllers = {
+        "mpc-fcem": (".fcem", "MpcFCem"),
         "mpc-icem": (".icem", "MpcICem"),
         "mpc-cem-std": (".mpc", "MpcCemStd"),
         "mpc-random": (".mpc", "MpcRandom"),

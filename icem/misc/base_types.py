@@ -4,7 +4,7 @@ from typing import Sequence
 import numpy as np
 
 from abc import ABC, abstractmethod
-import gym
+import gymnasium as gym
 
 from misc.rolloutbuffer import RolloutBuffer
 
@@ -63,7 +63,7 @@ class ForwardModel(ABC):
     supports_stochastic = False
 
     # noinspection PyUnusedLocal
-    def __init__(self, *, env: Env):
+    def __init__(self, env: Env, **kwargs):
         self.env = env
 
     @abstractmethod

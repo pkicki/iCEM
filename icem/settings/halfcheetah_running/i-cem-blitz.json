@@ -4,10 +4,14 @@
     "..defaults.i-cem-blitz",
     "..defaults.gt_default_env"
   ],
+  "controller": "mpc-fcem",
   "controller_params": {
     "action_sampler_params": {
-       "noise_beta": 0.25
+       "noise_beta": 0.0,
+       "cutoff_freq": 0.0,
+       "init_std": 0.5
     }
   },
+  "forward_model": "GroundTruthModel",
   "model_dir": "results/icem/halfcheetah_running/i-cem-blitz"
 }

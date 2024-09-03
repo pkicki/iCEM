@@ -14,6 +14,6 @@ class Seeding:
         cls.SEED = create_seed() if seed is None else seed
         # print(f"Simulated Env created with seed: {cls.SEED}")
         # print(f'Using seed {cls.SEED}')
-        env.seed(cls.SEED)
+        #env.seed(cls.SEED)
         np.random.seed(cls.SEED)
         manual_seed(cls.SEED)

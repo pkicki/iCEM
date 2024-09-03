@@ -5,12 +5,12 @@
     "penalise_flipping": true
   },
   "forward_model_params": {
-    "num_parallel": 8
+    "num_parallel": 1
   },
   "rollout_params": {
-    "task_horizon": 1000
+    "task_horizon": 50
   },
-  "number_of_rollouts": 1,
+  "number_of_rollouts": 0,
   "training_iterations": 1,
-  "evaluation_rollouts": 0
+  "evaluation_rollouts": 2
 }

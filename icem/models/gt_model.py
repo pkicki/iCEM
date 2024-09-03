@@ -65,7 +65,12 @@ class GroundTruthModel(AbstractGroundTruthModel):
             else:
                 return state
 
-        if observations.ndim == 1:
+        #print("OBS:", observations)
+        #print("ACTIONS:", actions)
+        #observations = observations[0]
+        if observations[0].ndim == 1 or observations.ndim == 1:
+            #print("OBS:", observations)
+        #if observations.ndim == 1:
             return self.simulated_env.simulate(state_to_use(observations, states), actions)
         elif states is None:
             states = [None] * len(observations)
