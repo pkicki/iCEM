@@ -50,6 +50,7 @@ nvidia-nvjitlink-cu12==12.6.68
 nvidia-nvtx-cu12==12.1.105
 packaging==24.1
 pandas==2.2.2
+patchelf==0.17.2.1
 pillow==10.4.0
 protobuf==5.28.0
 py-cpuinfo==9.0.0

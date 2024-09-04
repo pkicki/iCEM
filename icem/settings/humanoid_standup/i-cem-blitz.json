@@ -4,9 +4,12 @@
     "..defaults.i-cem-blitz",
     "..defaults.gt_default_env"
   ],
+  "controller": "mpc-fcem",
   "controller_params": {
     "action_sampler_params": {
-       "noise_beta": 2.0
+       "noise_beta": 2.0,
+       "cutoff_freq": 0.0,
+       "init_std": 0.5
     }
   },
   "model_dir": "results/icem/humanoid_standup/i-cem-blitz"

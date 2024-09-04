@@ -15,9 +15,12 @@ def background(f):
 ENVBIN = sys.exec_prefix
 PYTHON = os.path.join(ENVBIN, "bin", "python")
 
-N = 100
+N = 1
 #skip_existing = False
 skip_existing = True
+
+#env_name = "humanoid_standup"
+env_name = "halfcheetah_running"
 
 #name = "icem"
 #noise_betas = np.linspace(0.6, 1.0, 21).tolist()
@@ -39,13 +42,14 @@ results = {"sweep_names": sweep_names,
 
 @background
 def run_exp(idx, values):
-    filename = f"exp_results/{name}/{'_'.join(str(v) for v in values)}.res"
+    filename = f"exp_results/{env_name}/{name}/{'_'.join(str(v) for v in values)}.res"
+    os.makedirs(os.path.dirname(filename), exist_ok=True)
     if skip_existing and os.path.exists(filename):
         return True
 
     #cmd = f"taskset -c {idx%5} {PYTHON} main.py "
     cmd = f"{PYTHON} main.py "
-    cmd += './settings/halfcheetah_running/i-cem-blitz.json '
+    cmd += f'./settings/{env_name}/i-cem-blitz.json '
     cmd += f'evaluation_rollouts={N} '
 
     for i, v in enumerate(values):

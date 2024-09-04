@@ -4,7 +4,7 @@ from gymnasium.envs.mujoco.reacher_v4 import ReacherEnv
 from gymnasium.envs.mujoco.half_cheetah_v4 import HalfCheetahEnv as HalfCheetah_v4
 from gymnasium.envs.mujoco.ant_v4 import AntEnv as Ant_v4
 from gymnasium.envs.mujoco.humanoid_v4 import HumanoidEnv as Humanoid_v4
-from gymnasium.envs.mujoco.humanoidstandup import HumanoidStandupEnv as HumanoidStandup_v2
+from gymnasium.envs.mujoco.humanoidstandup import HumanoidStandupEnv as HumanoidStandup_v4
 from gymnasium.envs.mujoco.hopper_v4 import HopperEnv
 from gymnasium.utils import EzPickle
 from math import atan2
@@ -238,9 +238,9 @@ class Hopper(MujocoGroundTruthSupportEnv, HopperEnv):
         return scores
 
 
-class HumanoidStandup(MujocoGroundTruthSupportEnv, HumanoidStandup_v2):
+class HumanoidStandup(MujocoGroundTruthSupportEnv, HumanoidStandup_v4):
     def __init__(self, *, name, **kwargs):
-        HumanoidStandup_v2.__init__(self)
+        HumanoidStandup_v4.__init__(self)
         MujocoGroundTruthSupportEnv.__init__(self, name=name, **kwargs)
         self.store_init_arguments(locals())
         EzPickle.__init__(self, name=name, **self.init_kwargs)
