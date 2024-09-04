@@ -22,8 +22,9 @@
             "justMyCode": false,
             "console": "integratedTerminal",
             "args": [
-                "./settings/halfcheetah_running/i-cem-blitz.json",
-                "controller_params.action_sampler_params.noise_beta=0.2"
+                "./settings/humanoid_standup/i-cem-blitz.json",
+                //"./settings/halfcheetah_running/i-cem-blitz.json",
+                "controller_params.action_sampler_params.noise_beta=2.0"
             ]
         },
     ]

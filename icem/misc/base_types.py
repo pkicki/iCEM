@@ -17,7 +17,7 @@ class Env(gym.Env, ABC):
 
     def __init__(self, *, name, **kwargs):
         self.name = name
-        super().__init__(**kwargs)
+        super(gym.Env, self).__init__(**kwargs)
 
     @abstractmethod
     def cost_fn(self, observation, action, next_obs):

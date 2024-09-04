@@ -19,8 +19,8 @@ N = 1
 #skip_existing = False
 skip_existing = True
 
-#env_name = "humanoid_standup"
-env_name = "halfcheetah_running"
+env_name = "humanoid_standup"
+#env_name = "halfcheetah_running"
 
 #name = "icem"
 #noise_betas = np.linspace(0.6, 1.0, 21).tolist()
@@ -29,8 +29,8 @@ env_name = "halfcheetah_running"
 #sweep_names = ['noise_beta', 'init_std']
 
 name = "fcem"
-cutoff_freqs = np.linspace(6.0, 7.0, 5).tolist()
-init_stds = np.linspace(0.5, 1.0, 11).tolist()
+cutoff_freqs = np.linspace(6.0, 7.0, 3).tolist()
+init_stds = np.linspace(0.5, 1.0, 3).tolist()
 sweep_values = [cutoff_freqs, init_stds]
 sweep_names = ['cutoff_freq', 'init_std']
 

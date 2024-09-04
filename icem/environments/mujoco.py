@@ -4,7 +4,7 @@ from gymnasium.envs.mujoco.reacher_v4 import ReacherEnv
 from gymnasium.envs.mujoco.half_cheetah_v4 import HalfCheetahEnv as HalfCheetah_v4
 from gymnasium.envs.mujoco.ant_v4 import AntEnv as Ant_v4
 from gymnasium.envs.mujoco.humanoid_v4 import HumanoidEnv as Humanoid_v4
-from gymnasium.envs.mujoco.humanoidstandup import HumanoidStandupEnv as HumanoidStandup_v4
+from gymnasium.envs.mujoco.humanoidstandup_v4 import HumanoidStandupEnv as HumanoidStandup_v4
 from gymnasium.envs.mujoco.hopper_v4 import HopperEnv
 from gymnasium.utils import EzPickle
 from math import atan2
@@ -36,8 +36,8 @@ class MujocoGroundTruthSupportEnv(GroundTruthSupportEnv, MujocoEnvWithDefaults, 
         #self.sim.set_state_from_flattened(state.copy())
         state_ = state.copy()
         #print("STATE ENV:", state_)
-        qpos = state_[:self.model.nv]
-        qvel = state_[self.model.nv:]
+        qpos = state_[:self.model.nq]
+        qvel = state_[self.model.nq:self.model.nq + self.model.nv]
         self.data.qpos[:] = qpos[:]
         self.data.qvel[:] = qvel[:]
         mujoco.mj_fwdPosition(self.model, self.data)
@@ -240,11 +240,15 @@ class Hopper(MujocoGroundTruthSupportEnv, HopperEnv):
 
 class HumanoidStandup(MujocoGroundTruthSupportEnv, HumanoidStandup_v4):
     def __init__(self, *, name, **kwargs):
-        HumanoidStandup_v4.__init__(self)
+        HumanoidStandup_v4.__init__(self, **kwargs)
         MujocoGroundTruthSupportEnv.__init__(self, name=name, **kwargs)
         self.store_init_arguments(locals())
         EzPickle.__init__(self, name=name, **self.init_kwargs)
         # needed to call make the pickling work with the args given
+
+    def step(self, a):
+        obs, reward, _, _, info_dict = super().step(a)
+        return obs, reward, False, info_dict
 
     def viewer_setup(self):
         super().viewer_setup()

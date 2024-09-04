@@ -12,5 +12,6 @@
        "init_std": 0.5
     }
   },
+  "forward_model": "GroundTruthModel",
   "model_dir": "results/icem/humanoid_standup/i-cem-blitz"
 }
