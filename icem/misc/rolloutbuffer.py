@@ -25,27 +25,10 @@ class Rollout(object):
             raise ValueError("No data given!")
 
         data_idx = [(i, name) for i, name in enumerate(field_names) if name not in ['env_states', 'model_states']]
-        #print(transitions[0])
-        #print(data_idx)
-        #print([transitions[0][i] for i, name in data_idx])
-        #if len(data_idx) == 5:
-        #    a = 0
         self.dtype = [(name, "f8", np.array(transitions[0][i]).shape) for i, name in data_idx]
         # self.dtype = [(name, "f8", np.array(item).shape) for name, item in zip(field_names, transitions[0]) if
         #               name not in ['env_states', 'model_states']]
-        #a = [tuple(x[i] for i, name in data_idx) for x in transitions]
-        #print(a)
-        #print()
-        #print("A0:", a[0])
-        #print(field_names)
         self._data = np.array([tuple(x[i] for i, name in data_idx) for x in transitions], dtype=self.dtype)
-        #print([x[0].shape for x in a])
-        #print([x[1].shape for x in a])
-        #print([x[2].shape for x in a])
-        #print([x[3].shape for x in a])
-        #self._data = {fn: np.array([x[field_names.index(fn)] for x in a]) for fn in field_names}
-        #self._data = {fn: np.array([x[field_names.index(fn)] for x in transitions]) for fn in field_names}
-        #print(self._data)
         self.env_states = None
         if 'env_states' in field_names:
             idx = field_names.index('env_states')

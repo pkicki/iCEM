@@ -110,8 +110,13 @@ class RolloutManager:
             else:
                 temp_start_ob = [None] * no_rollouts if start_ob is None else start_ob
                 temp_start_state = [None] * no_rollouts if start_state is None else start_state
-                return [self.sample_env(policy, self.logger, render, mode, temp_start_ob[i], temp_start_state[i])
-                        for i in (tqdm_context(range(no_rollouts), desc=desc) if use_tqdm else range(no_rollouts))]
+                a = []
+                for i in (tqdm_context(range(no_rollouts), desc=desc) if use_tqdm else range(no_rollouts)):
+                    print(i)
+                    a.append(self.sample_env(policy, self.logger, render, mode, temp_start_ob[i], temp_start_state[i]))
+                #return [self.sample_env(policy, self.logger, render, mode, temp_start_ob[i], temp_start_state[i])
+                #        for i in (tqdm_context(range(no_rollouts), desc=desc) if use_tqdm else range(no_rollouts))]
+                return a
 
     def create_sample_params_dict(self, use_tqdm=True):
         return {"use_env_states": self.use_env_states,
