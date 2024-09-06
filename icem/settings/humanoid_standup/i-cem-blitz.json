@@ -6,10 +6,12 @@
   ],
   "controller": "mpc-fcem",
   "controller_params": {
+    "num_simulated_trajectories": 20,
     "action_sampler_params": {
-       "noise_beta": 2.0,
-       "cutoff_freq": 0.0,
-       "init_std": 0.5
+      "elites_size": 5,
+      "noise_beta": 2.0,
+      "cutoff_freq": 0.0,
+      "init_std": 0.5
     }
   },
   "forward_model": "GroundTruthModel",

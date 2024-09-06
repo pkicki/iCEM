@@ -42,7 +42,7 @@ results = {"sweep_names": sweep_names,
 
 @background
 def run_exp(idx, values):
-    filename = f"exp_results/{env_name}/{name}/{'_'.join(str(v) for v in values)}.res"
+    filename = f"exp_results/{env_name}_ntraj20_nelite_5/{name}/{'_'.join(str(v) for v in values)}.res"
     os.makedirs(os.path.dirname(filename), exist_ok=True)
     if skip_existing and os.path.exists(filename):
         return True
